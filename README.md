@@ -1,11 +1,152 @@
-# Getting Started with Create React App
+# Product Card Component Documentation
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## Introduction
 
-## Available Scripts
+The Product Card Component is a React component designed to display a list of products fetched from an API source. It provides a responsive layout with options to expand and collapse product descriptions. The component is integrated with Redux for state management.
 
-In the project directory, you can run:
+## Features
 
+- Fetches product data from an API source.
+- Displays product information in a card format.
+- Responsive design for various screen sizes.
+- Expand and collapse product descriptions with a "Read more" button.
+- Consistent card layout and styling.
+- Integrated with Redux for state management.
+
+## Tools Used
+
+- React
+- Redux
+- Tailwind CSS
+
+# Usage
+
+## Props
+
+The ProductCard component does not require any props for basic functionality. Product data is fetched and managed internally. However, you can customize its appearance and behavior using the following optional props:
+
+- `products`: An array An array of product objects containing `title`, `price`, `description`, and `image` properties. (Array)
+
+- `loading`: Indicates if data is being fetched. (Boolean)
+- `error`: Contains an error message if data fetching fails. (String)
+
+# Redux Integration
+
+The `ProductCard` component is integrated with Redux for state management. It relies on the following Redux store structure, actions, and reducers:
+
+```
+{
+ product: {
+   products: [],    // An array of product objects
+   loading: false,  // Indicates if data is being fetched
+   error: null       // Contains an error message if data fetching fails
+ }
+}
+
+```
+
+## Redux Actions
+
+`fetchProducts`: This action is dispatched to fetch product data from an API source.
+
+## Redux Reducers
+
+- `productReducer`: Handles actions related to product data. It updates the store's `products`, `loading`, and `error` fields based on the action.
+
+# steps of connecting redux to the component
+
+
+
+    1. Set up Redux in the application, including the store, actions, and reducers.
+
+    2. Imported the ProductCard component into the component file.
+
+    3. Connected the ProductCard component to the Redux store using the connect function.
+
+    4.Dispatched the fetchProducts action to fetch product data.
+
+    5.Access product data, loading state, and error state from the Redux store and pass them as props to the `ProductCard` component.
+
+
+    
+```
+import React, { useEffect } from 'react';
+import { connect } from 'react-redux';
+import { fetchProducts } from '../redux/actions/productActions';
+import { useState } from 'react';
+
+function ProductCard({ products, loading, error, fetchProducts }) {
+  const [expandedDescriptions, setExpandedDescriptions] = useState(
+    Array(products.length).fill(false),
+  );
+  useEffect(() => {
+    fetchProducts();
+  }, [fetchProducts]);
+
+  if (loading) {
+    return <div className="text-center text-3xl">Loading...</div>;
+  }
+
+  if (error) {
+    return <div className="text-center">Error: {error}</div>;
+  }
+
+  
+  const toggleDescription = (index) => {
+    const newExpandedDescriptions = [...expandedDescriptions];
+    newExpandedDescriptions[index] = !newExpandedDescriptions[index];
+    setExpandedDescriptions(newExpandedDescriptions);
+  };
+
+  return (
+    <main className="flex justify-center items-center flex-wrap gap-3">
+      {products.map((product, index) => (
+        <div
+          key={product.id}
+          className="max-w-[275px] bg-white border border-gray-200 rounded-lg shadow"
+        >
+          <img className="rounded-t-lg w-36 h-24" src={product.image} alt="" />
+
+          <div className="p-5">
+            <h6 className="mb-2 text-sm font-bold tracking-tight text-gray-900 ">
+              {product.title}
+            </h6>
+            <h5 className="mb-3 font-semibold text-sm">
+              {' '}
+              Price: ${product.price}
+            </h5>
+            <p className="mb-3 text-xs text-gray-700 dark:text-gray-400 ">
+              {expandedDescriptions[index]
+                ? product.description
+                : `${product.description.substring(0, 150)}`}
+              ...
+              <button
+                className="text-red-500 "
+                onClick={() => toggleDescription(index)}
+              >
+                {expandedDescriptions[index] ? 'Show Less' : 'Read more'}
+              </button>
+            </p>
+          </div>
+        </div>
+      ))}
+    </main>
+  );
+}
+
+const mapStateToProps = (state) => ({
+  products: state.product.products,
+  loading: state.product.loading,
+  error: state.product.error,
+});
+
+export default connect(mapStateToProps, { fetchProducts })(ProductCard);
+
+
+```
+
+## Styling
+The component utilizes the Tailwind CSS framework for styling.
 ### `npm start`
 
 Runs the app in the development mode.\
