@@ -33,7 +33,7 @@ function ProductCard({ products, loading, error, fetchProducts }) {
           key={product.id}
           className="max-w-[275px] bg-white border border-gray-200 rounded-lg shadow"
         >
-          <img className="rounded-t-lg w-36 h-24" src={product.image} alt="" />
+          <img className="rounded-t-lg w-full h-48 " src={product.image} alt="" />
 
           <div className="p-5">
             <h6 className="mb-2 text-sm font-bold tracking-tight text-gray-900 ">

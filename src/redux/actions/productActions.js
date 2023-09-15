@@ -31,7 +31,7 @@ export const fetchProducts = () => {
       .then((response) => {
         const products = response.data.map((product) => ({
           ...product,
-          imageUrl: product.image, // Add the imageUrl property with the image URL
+          imageUrl: product.image, 
         }));
         dispatch(fetchProductsSuccess(products));
       })
